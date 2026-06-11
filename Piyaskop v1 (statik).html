@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piyaskop — Bilim ve Teknoloji</title>
+<link rel="icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --accent: #2fd4b9;
+    --accent-2: #3fbf7f;
+    --bg: #090d11;
+    --surface: #0f151b;
+    --surface-2: #131b22;
+    --line: rgba(255, 255, 255, 0.08);
+    --text: #e8edf0;
+    --muted: #93a1ab;
+    --radius: 14px;
+    --glow-opacity: 0.5;
+    --font-display: "Space Grotesk", sans-serif;
+    --font-body: "Manrope", sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; }
+
+  a { color: inherit; text-decoration: none; }
+  img { display: block; }
+
+  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+
+  /* ---------- Nav ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 50;
+    background: color-mix(in srgb, var(--bg) 82%, transparent);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid var(--line);
+  }
+  .nav-inner {
+    display: flex; align-items: center; gap: 32px;
+    height: 68px;
+  }
+  .nav-brand { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+  .nav-brand img { width: 36px; height: 36px; }
+  .nav-brand span {
+    font-family: var(--font-display); font-weight: 700; font-size: 19px;
+    letter-spacing: 0.04em; text-transform: uppercase;
+  }
+  .nav-links { display: flex; gap: 28px; }
+  .nav-links a {
+    font-size: 14px; font-weight: 600; color: var(--muted);
+    transition: color 0.2s;
+  }
+  .nav-links a:hover, .nav-links a.active { color: var(--text); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display); font-weight: 600; font-size: 14px;
+    padding: 10px 20px; border-radius: 999px; border: none; cursor: pointer;
+    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+  }
+  .btn-primary {
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    color: #07120f;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
+  .btn-ghost {
+    background: transparent; color: var(--text);
+    border: 1px solid var(--line);
+  }
+  .btn-ghost:hover { border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; overflow: hidden; padding: 96px 0 88px; }
+  .hero-glow {
+    position: absolute; inset: 0; pointer-events: none;
+    opacity: var(--glow-opacity);
+    background:
+      radial-gradient(560px 360px at 78% 28%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+      radial-gradient(480px 320px at 12% 86%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 70%);
+  }
+  .hero-inner {
+    position: relative;
+    display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center;
+  }
+  .hero-kicker {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 22px;
+  }
+  .hero-kicker::before {
+    content: ""; width: 28px; height: 2px;
+    background: var(--accent); border-radius: 2px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 5vw, 58px); font-weight: 700; letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    background: linear-gradient(120deg, var(--accent), var(--accent-2));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+  .hero p { font-size: 18px; color: var(--muted); max-width: 46ch; margin-bottom: 34px; text-wrap: pretty; }
+  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+
+  .hero-frame { position: relative; }
+  .hero-frame image-slot {
+    width: 100%; aspect-ratio: 16 / 9; display: block;
+    border-radius: var(--radius);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--line);
+  }
+  .hero-frame .play-badge {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+    width: 72px; height: 72px; border-radius: 50%;
+    background: color-mix(in srgb, var(--bg) 65%, transparent);
+    backdrop-filter: blur(6px);
+    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+    display: grid; place-items: center; pointer-events: none;
+  }
+  .hero-frame .play-badge::after {
+    content: ""; margin-left: 5px;
+    border-left: 20px solid var(--accent);
+    border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+  }
+  .hero-frame figcaption {
+    margin-top: 14px; font-size: 13px; color: var(--muted);
+    font-family: var(--font-display); letter-spacing: 0.04em;
+  }
+
+  /* ---------- Sections ---------- */
+  section { padding: 88px 0; }
+  .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 44px; }
+  .section-head h2 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 700; letter-spacing: -0.01em; }
+  .section-kicker {
+    display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+    font-family: var(--font-display);
+  }
+  .section-head p { color: var(--muted); max-width: 44ch; font-size: 15px; }
+
+  /* ---------- Videos ---------- */
+  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .video-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  }
+  .video-card:hover {
+    transform: translateY(-4px);
+    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+  }
+  .video-card image-slot { width: 100%; aspect-ratio: 16 / 9; display: block; }
+  .video-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+  .video-tag {
+    align-self: flex-start;
+    font-family: var(--font-display); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+    border-radius: 999px; padding: 3px 10px;
+  }
+  .video-card h3 { font-size: 17px; font-weight: 600; }
+  .video-card-link { display: contents; }
+
+  .videos-foot { display: flex; justify-content: center; margin-top: 44px; }
+
+  /* ---------- About ---------- */
+  .about { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .about-inner { display: grid; grid-template-columns: 320px 1fr; gap: 72px; align-items: center; }
+  .about-portrait { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+  .about-portrait::before {
+    content: ""; position: absolute; inset: -14px; border-radius: 50%;
+    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .about-portrait image-slot { width: 100%; height: 100%; display: block; }
+  .about h2 { font-size: clamp(28px, 3.2vw, 38px); margin-bottom: 18px; }
+  .about p { color: var(--muted); margin-bottom: 16px; max-width: 58ch; text-wrap: pretty; }
+  .about-points { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+  .about-points span {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    padding: 8px 16px; border-radius: 999px;
+    background: var(--surface-2); border: 1px solid var(--line);
+  }
+
+  /* ---------- Sponsor ---------- */
+  .sponsor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+  .sponsor-card {
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: var(--radius); padding: 30px 28px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .sponsor-card .num {
+    font-family: var(--font-display); font-size: 14px; font-weight: 700;
+    color: var(--accent); letter-spacing: 0.1em;
+  }
+  .sponsor-card h3 { font-size: 19px; font-weight: 600; }
+  .sponsor-card p { color: var(--muted); font-size: 15px; }
+  .sponsor-cta {
+    margin-top: 48px;
+    background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));
+    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    border-radius: var(--radius);
+    padding: 36px 40px;
+    display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+  }
+  .sponsor-cta h3 { font-size: 22px; margin-bottom: 6px; }
+  .sponsor-cta p { color: var(--muted); font-size: 15px; }
+
+  /* ---------- Duyurular ---------- */
+  .news { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .news-list { display: flex; flex-direction: column; }
+  .news-item {
+    display: grid; grid-template-columns: 130px 1fr auto; gap: 28px; align-items: baseline;
+    padding: 26px 8px; border-bottom: 1px solid var(--line);
+  }
+  .news-item:first-child { border-top: 1px solid var(--line); }
+  .news-date {
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    color: var(--accent); letter-spacing: 0.06em;
+  }
+  .news-item h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+  .news-item p { color: var(--muted); font-size: 14px; }
+  .news-pill {
+    font-family: var(--font-display); font-size: 11px; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px;
+    white-space: nowrap;
+  }
+
+  /* ---------- Footer ---------- */
+  footer { padding: 64px 0 40px; }
+  .footer-top {
+    display: flex; align-items: center; justify-content: space-between; gap: 24px;
+    padding-bottom: 36px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+  }
+  .footer-brand { display: flex; align-items: center; gap: 14px; }
+  .footer-brand img { width: 44px; height: 44px; }
+  .footer-brand strong {
+    font-family: var(--font-display); font-size: 18px; letter-spacing: 0.04em;
+    text-transform: uppercase; display: block;
+  }
+  .footer-brand small { color: var(--muted); font-size: 13px; }
+  .footer-social { display: flex; gap: 12px; }
+  .footer-social a {
+    display: inline-flex; align-items: center;
+    font-family: var(--font-display); font-size: 13px; font-weight: 600;
+    padding: 9px 18px; border-radius: 999px;
+    border: 1px solid var(--line); color: var(--muted);
+    transition: color 0.2s, border-color 0.2s;
+  }
+  .footer-social a:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+  .footer-bottom {
+    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+    padding-top: 24px; color: var(--muted); font-size: 13px;
+  }
+  .footer-bottom a { color: var(--accent); }
+
+  /* ---------- Reveal ---------- */
+  @media (prefers-reduced-motion: no-preference) {
+    .js-reveal .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+    .js-reveal .reveal.in { opacity: 1; transform: none; }
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 920px) {
+    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+    .video-grid, .sponsor-grid { grid-template-columns: 1fr 1fr; }
+    .about-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+    .about p, .about h2 { margin-left: auto; margin-right: auto; }
+    .about-points { justify-content: center; }
+    .nav-links { display: none; }
+  }
+  @media (max-width: 600px) {
+    .video-grid, .sponsor-grid { grid-template-columns: 1fr; }
+    .news-item { grid-template-columns: 1fr; gap: 6px; }
+    .news-pill { justify-self: start; }
+    section { padding: 64px 0; }
+    .wrap { padding: 0 20px; }
+  }
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap nav-inner">
+    <a class="nav-brand" href="#top">
+      <img src="assets/logo.png" alt="Piyaskop logosu">
+      <span>Piyaskop</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#videolar">Videolar</a>
+      <a href="#hakkimda">Hakkımda</a>
+      <a href="#isbirligi">İş Birlikleri</a>
+      <a href="#duyurular">Duyurular</a>
+    </nav>
+    <a class="btn btn-primary" href="https://www.youtube.com/@piyaskop" target="_blank" rel="noopener">Abone Ol</a>
+  </div>
+</header>
+
+<main id="top">
+
+  <!-- HERO -->
+  <section class="hero" data-screen-label="Hero">
+    <div class="hero-glow"></div>
+    <div class="wrap hero-inner">
+      <div>
+        <span class="hero-kicker">Bilim &amp; Teknoloji Kanalı</span>
+        <h1>Bilimi ve teknolojiyi <em>merceğe</em> alıyoruz.</h1>
+        <p>Piyaskop; merak ettiğiniz bilimsel soruları ve teknolojideki son gelişmeleri herkesin anlayacağı bir dille ekrana taşır.</p>
+        <div class="hero-ctas">
+          <a class="btn btn-primary" href="https://www.youtube.com/@piyaskop" target="_blank" rel="noopener">YouTube'da İzle</a>
+          <a class="btn btn-ghost" href="#videolar">Videolara Göz At</a>
+        </div>
+      </div>
+      <figure class="hero-frame">
+        <image-slot id="hero-banner" shape="rounded" radius="14" placeholder="Öne çıkan video kapağı veya kanal banner'ı buraya"></image-slot>
+        <div class="play-badge"></div>
+        <figcaption>Öne çıkan video</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- VIDEOLAR -->
+  <section id="videolar" data-screen-label="Videolar">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="section-kicker">Arşiv</span>
+          <h2>Son Videolar</h2>
+        </div>
+        <p>Kapak görsellerinizi kartların üzerine sürükleyip bırakın; başlıkları kendi videolarınızla değiştirin.</p>
+      </div>
+      <div class="video-grid">
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-1" shape="rect" placeholder="Video kapağı 1"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Bilim</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-2" shape="rect" placeholder="Video kapağı 2"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Teknoloji</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-3" shape="rect" placeholder="Video kapağı 3"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Uzay</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-4" shape="rect" placeholder="Video kapağı 4"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Yapay Zekâ</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-5" shape="rect" placeholder="Video kapağı 5"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Bilim</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+        <article class="video-card reveal">
+          <a class="video-card-link" href="#" aria-label="Videoyu izle">
+            <image-slot id="thumb-6" shape="rect" placeholder="Video kapağı 6"></image-slot>
+            <div class="video-card-body">
+              <span class="video-tag">Teknoloji</span>
+              <h3>Video başlığı — kendi videonuzla değiştirin</h3>
+            </div>
+          </a>
+        </article>
+      </div>
+      <div class="videos-foot reveal">
+        <a class="btn btn-ghost" href="https://www.youtube.com/@piyaskop" target="_blank" rel="noopener">Tüm Videolar YouTube'da</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAKKIMDA -->
+  <section id="hakkimda" class="about" data-screen-label="Hakkımda">
+    <div class="wrap about-inner">
+      <div class="about-portrait reveal">
+        <image-slot id="portrait" shape="circle" placeholder="Fotoğrafınız"></image-slot>
+      </div>
+      <div class="reveal">
+        <span class="section-kicker">Hakkımda</span>
+        <h2>Piyaskop'un arkasındaki merak</h2>
+        <p>Bu bölüm sizin hikâyeniz için ayrıldı: kanala nasıl başladığınız, hangi konuları neden anlattığınız ve izleyicilerinize ne vadettiğiniz. Bana birkaç cümle gönderin, buraya yerleştireyim.</p>
+        <p>Her kitleye hitap eden, sade ve güvenilir bir anlatım — Piyaskop'un imzası bu.</p>
+        <div class="about-points">
+          <span>Bilim</span>
+          <span>Teknoloji</span>
+          <span>Herkes için anlaşılır</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- İŞ BİRLİKLERİ -->
+  <section id="isbirligi" data-screen-label="İş Birlikleri">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="section-kicker">Sponsorluk</span>
+          <h2>Markalar için iş birlikleri</h2>
+        </div>
+        <p>Bilim ve teknolojiye meraklı, geniş bir izleyici kitlesine doğal yollarla ulaşın.</p>
+      </div>
+      <div class="sponsor-grid">
+        <div class="sponsor-card reveal">
+          <span class="num">01</span>
+          <h3>Video Sponsorluğu</h3>
+          <p>Videonun başında veya içinde markanıza ayrılmış, içerikle uyumlu sponsorluk bölümü.</p>
+        </div>
+        <div class="sponsor-card reveal">
+          <span class="num">02</span>
+          <h3>Ürün İncelemesi</h3>
+          <p>Teknoloji ürününüzün derinlemesine, dürüst ve anlaşılır bir incelemesi.</p>
+        </div>
+        <div class="sponsor-card reveal">
+          <span class="num">03</span>
+          <h3>Özel İçerik</h3>
+          <p>Markanızın hikâyesine özel, baştan sona birlikte kurgulanan video projeleri.</p>
+        </div>
+      </div>
+      <div class="sponsor-cta reveal">
+        <div>
+          <h3>Birlikte çalışalım</h3>
+          <p>Medya kiti ve güncel istatistikler için e-posta gönderin.</p>
+        </div>
+        <a class="btn btn-primary" href="mailto:iletisim@piyaskop.com">iletisim@piyaskop.com</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- DUYURULAR -->
+  <section id="duyurular" class="news" data-screen-label="Duyurular">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <div>
+          <span class="section-kicker">Topluluk</span>
+          <h2>Duyurular</h2>
+        </div>
+        <p>Yeni videolar, yayın takvimi ve topluluk haberleri — örnek satırları kendi duyurularınızla değiştirin.</p>
+      </div>
+      <div class="news-list reveal">
+        <div class="news-item">
+          <span class="news-date">— · 2026</span>
+          <div>
+            <h3>Duyuru başlığı</h3>
+            <p>Kısa açıklama — yeni video, etkinlik veya topluluk haberi.</p>
+          </div>
+          <span class="news-pill">Yeni Video</span>
+        </div>
+        <div class="news-item">
+          <span class="news-date">— · 2026</span>
+          <div>
+            <h3>Duyuru başlığı</h3>
+            <p>Kısa açıklama — yeni video, etkinlik veya topluluk haberi.</p>
+          </div>
+          <span class="news-pill">Duyuru</span>
+        </div>
+        <div class="news-item">
+          <span class="news-date">— · 2026</span>
+          <div>
+            <h3>Duyuru başlığı</h3>
+            <p>Kısa açıklama — yeni video, etkinlik veya topluluk haberi.</p>
+          </div>
+          <span class="news-pill">Topluluk</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <img src="assets/logo.png" alt="Piyaskop logosu">
+        <div>
+          <strong>Piyaskop</strong>
+          <small>Bilim &amp; Teknoloji</small>
+        </div>
+      </div>
+      <div class="footer-social">
+        <a href="https://www.youtube.com/@piyaskop" target="_blank" rel="noopener">YouTube</a>
+        <a href="#" target="_blank" rel="noopener">Instagram</a>
+        <a href="#" target="_blank" rel="noopener">X</a>
+        <a href="mailto:iletisim@piyaskop.com">E-posta</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Piyaskop. Tüm hakları saklıdır.</span>
+      <span>İletişim: <a href="mailto:iletisim@piyaskop.com">iletisim@piyaskop.com</a></span>
+    </div>
+  </div>
+</footer>
+
+<script src="image-slot.js"></script>
+<script>
+  // Scroll reveal — hidden state only applies once JS confirms IO works,
+  // with a timeout fallback so content can never stay invisible.
+  (function () {
+    const els = Array.from(document.querySelectorAll('.reveal'));
+    if (!('IntersectionObserver' in window)) { return; }
+    document.documentElement.classList.add('js-reveal');
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { threshold: 0.12 });
+    els.forEach(function (el) { io.observe(el); });
+    // Safety: if IO never fires (some embedded contexts), reveal everything.
+    setTimeout(function () {
+      els.forEach(function (el) { el.classList.add('in'); });
+    }, 1200);
+  })();
+
+  // Active nav highlight
+  const sections = ['videolar', 'hakkimda', 'isbirligi', 'duyurular'];
+  const navAnchors = Array.from(document.querySelectorAll('.nav-links a'));
+  const secIO = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (e.isIntersecting) {
+        navAnchors.forEach(function (a) {
+          a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-40% 0px -55% 0px' });
+  sections.forEach(function (id) {
+    const el = document.getElementById(id);
+    if (el) { secIO.observe(el); }
+  });
+</script>
+
+<!-- Tweaks panel -->
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<div id="tweaks-root"></div>
+<script type="text/babel">
+  const TWEAK_DEFAULTS = /*EDITMODE-BEGIN*/{
+    "accent": [
+      "#4da3ff",
+      "#2fd4b9"
+    ],
+    "radius": 11,
+    "glow": 66
+  }/*EDITMODE-END*/;
+
+  function PiyaskopTweaks() {
+    const [t, setTweak] = useTweaks(TWEAK_DEFAULTS);
+
+    React.useEffect(function () {
+      const r = document.documentElement.style;
+      r.setProperty('--accent', t.accent[0]);
+      r.setProperty('--accent-2', t.accent[1]);
+      r.setProperty('--radius', t.radius + 'px');
+      r.setProperty('--glow-opacity', String(t.glow / 100));
+    }, [t]);
+
+    return (
+      <TweaksPanel title="Tweaks">
+        <TweakSection label="Renk" />
+        <TweakColor label="Vurgu" value={t.accent}
+          options={[["#2fd4b9", "#3fbf7f"], ["#4da3ff", "#2fd4b9"], ["#b8c4cc", "#7e93a0"]]}
+          onChange={(v) => setTweak('accent', v)} />
+        <TweakSection label="Görünüm" />
+        <TweakSlider label="Köşe yuvarlaklığı" value={t.radius} min={0} max={24} unit="px"
+          onChange={(v) => setTweak('radius', v)} />
+        <TweakSlider label="Arka plan parlaması" value={t.glow} min={0} max={100} unit="%"
+          onChange={(v) => setTweak('glow', v)} />
+      </TweaksPanel>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('tweaks-root')).render(<PiyaskopTweaks />);
+</script>
+
+</body>
+</html>

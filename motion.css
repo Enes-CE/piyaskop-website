@@ -1,0 +1,222 @@
+/* ============================================================
+   Piyaskop — hareket katmanı
+   Tüm gizli başlangıç durumları .js-motion altında — JS yoksa
+   veya prefers-reduced-motion açıksa her şey direkt görünür.
+   ============================================================ */
+
+:root { --motion: 1; }
+
+/* ---------- Açılış perdesi ---------- */
+#intro { display: none; }
+.intro-on #intro {
+  display: flex;
+  position: fixed; inset: 0; z-index: 200;
+  align-items: center; justify-content: center;
+  background: var(--bg);
+  transition: transform 0.8s cubic-bezier(0.76, 0, 0.24, 1);
+}
+.intro-on:not(.intro-done) { overflow: hidden; }
+.intro-done #intro { transform: translateY(-100%); pointer-events: none; }
+
+.intro-center { display: flex; flex-direction: column; align-items: center; gap: 28px; }
+
+.intro-logo { position: relative; width: 96px; height: 96px; }
+.intro-logo img { width: 100%; height: 100%; }
+.intro-logo::before, .intro-logo::after {
+  content: ""; position: absolute; inset: -14px; border-radius: 50%;
+  border: 1px solid color-mix(in srgb, var(--accent) 50%, transparent);
+  opacity: 0;
+}
+.intro-on.intro-play .intro-logo { animation: introLogo 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both; }
+.intro-on.intro-play .intro-logo::before { animation: introRing 1.6s ease-out 0.5s both; }
+.intro-on.intro-play .intro-logo::after { animation: introRing 1.6s ease-out 0.9s both; }
+
+@keyframes introLogo {
+  from { opacity: 0; transform: scale(0.6); filter: blur(8px); }
+  to   { opacity: 1; transform: scale(1); filter: blur(0); }
+}
+@keyframes introRing {
+  0%   { opacity: 0.9; transform: scale(0.8); }
+  100% { opacity: 0; transform: scale(1.7); }
+}
+
+.intro-word {
+  display: flex; gap: 0.08em; overflow: hidden;
+  font-family: var(--font-display); font-weight: 700; font-size: 30px;
+  letter-spacing: 0.32em; text-transform: uppercase; color: var(--text);
+  padding-right: -0.32em;
+}
+.intro-word span { display: inline-block; transform: translateY(120%); }
+.intro-on.intro-play .intro-word span {
+  animation: introLetter 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: calc(0.35s + var(--i) * 0.055s);
+}
+@keyframes introLetter {
+  from { transform: translateY(120%); opacity: 0; }
+  to   { transform: none; opacity: 1; }
+}
+
+.intro-bar {
+  width: 180px; height: 2px; border-radius: 2px;
+  background: var(--line); overflow: hidden;
+}
+.intro-bar i {
+  display: block; height: 100%; width: 100%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  transform: translateX(-100%);
+}
+.intro-on.intro-play .intro-bar i { animation: introBar 1.5s cubic-bezier(0.5, 0, 0.3, 1) 0.3s both; }
+@keyframes introBar { from { transform: translateX(-100%); } to { transform: none; } }
+
+/* ---------- Hero giriş sahnesi ---------- */
+.js-motion .hero-enter {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity 0.75s ease, transform 0.75s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--d, 0s);
+}
+.js-motion.intro-done .hero-enter { opacity: 1; transform: none; }
+
+.hero h1 .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.08em; margin-bottom: -0.08em; }
+.hero h1 .wi { display: inline-block; }
+.js-motion .hero h1 .wi {
+  transform: translateY(115%);
+  transition: transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(0.12s + var(--i) * 0.07s);
+}
+.js-motion.intro-done .hero h1 .wi { transform: none; }
+
+.js-motion .hero-frame {
+  opacity: 0; transform: scale(0.95) translateY(20px);
+  transition: opacity 0.9s ease 0.35s, transform 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) 0.35s;
+}
+.js-motion.intro-done .hero-frame { opacity: 1; transform: none; }
+
+/* ---------- Hero: süzülen ışık küreleri + paralaks ---------- */
+.hero { --px: 0; --py: 0; }
+.orb {
+  position: absolute; border-radius: 50%; pointer-events: none;
+  filter: blur(70px); opacity: calc(var(--glow-opacity) * 0.85);
+}
+.orb-1 {
+  width: 460px; height: 460px; top: -10%; right: -6%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 26%, transparent), transparent 65%);
+  translate: calc(var(--px) * 26px * var(--motion)) calc(var(--py) * 18px * var(--motion));
+}
+.orb-2 {
+  width: 380px; height: 380px; bottom: -18%; left: -4%;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent-2) 20%, transparent), transparent 65%);
+  translate: calc(var(--px) * -20px * var(--motion)) calc(var(--py) * -14px * var(--motion));
+}
+@media (prefers-reduced-motion: no-preference) {
+  .orb-1 { animation: orbDrift1 14s ease-in-out infinite alternate; }
+  .orb-2 { animation: orbDrift2 18s ease-in-out infinite alternate; }
+}
+@keyframes orbDrift1 { from { transform: translate(0, 0) scale(1); } to { transform: translate(-50px, 36px) scale(1.12); } }
+@keyframes orbDrift2 { from { transform: translate(0, 0) scale(1.08); } to { transform: translate(44px, -28px) scale(0.96); } }
+
+.hero-frame-tilt { position: relative; }
+.js-motion .hero-frame-tilt {
+  transform: perspective(1100px)
+             rotateX(calc(var(--py) * -3deg * var(--motion)))
+             rotateY(calc(var(--px) * 4deg * var(--motion)));
+  transition: transform 0.25s ease-out;
+  will-change: transform;
+}
+
+/* ---------- Kaydırmayla açılan bölüm başlıkları (kelime maskeleri) ---------- */
+[data-split] .w { display: inline-block; overflow: hidden; vertical-align: bottom; padding-bottom: 0.1em; margin-bottom: -0.1em; }
+[data-split] .wi { display: inline-block; }
+.js-motion [data-split] .wi {
+  transform: translateY(115%);
+  transition: transform 0.85s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(0.08s + var(--i, 0) * 0.07s);
+}
+.js-motion .reveal.in [data-split] .wi { transform: none; }
+
+/* ---------- Öne çıkan video: kaydırdıkça sinematik açılış ---------- */
+.js-motion .featured-media { will-change: transform, clip-path; }
+.js-motion .featured-info {
+  opacity: 0; transform: translateY(26px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+.js-motion .featured-info.in { opacity: 1; transform: none; }
+
+/* ---------- Kayan yazı şeridi ---------- */
+.marquee {
+  overflow: hidden; padding: 26px 0;
+  border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+.marquee-track {
+  display: flex; gap: 0; width: max-content;
+  font-family: var(--font-display); font-weight: 700;
+  font-size: clamp(26px, 3.4vw, 42px); letter-spacing: 0.1em; text-transform: uppercase;
+  color: transparent;
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--accent) 45%, transparent);
+}
+.marquee-track span { white-space: nowrap; padding-right: 0.5em; }
+.marquee-track em {
+  font-style: normal; -webkit-text-stroke: 0;
+  background: linear-gradient(120deg, var(--accent), var(--accent-2));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track { animation: marqueeScroll 26s linear infinite; }
+}
+@keyframes marqueeScroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ---------- İmleç ışığı ---------- */
+#cursor-glow {
+  position: fixed; left: 0; top: 0; z-index: 5;
+  width: 520px; height: 520px; margin: -260px 0 0 -260px;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, color-mix(in srgb, var(--accent) 7%, transparent), transparent 60%);
+  opacity: 0; transition: opacity 0.4s ease;
+  mix-blend-mode: screen;
+}
+.js-motion #cursor-glow.on { opacity: calc(var(--motion) * 1); }
+@media (pointer: coarse) { #cursor-glow { display: none; } }
+
+/* ---------- Video kartları: 3B eğim + parıltı ---------- */
+.video-card { --rx: 0deg; --ry: 0deg; --mx: 50%; --my: 50%; position: relative; }
+.js-motion .video-card {
+  transform: perspective(900px) rotateX(calc(var(--rx) * var(--motion))) rotateY(calc(var(--ry) * var(--motion)));
+  transition: transform 0.18s ease-out, border-color 0.2s, box-shadow 0.2s;
+}
+.js-motion .video-card:hover {
+  transform: perspective(900px) rotateX(calc(var(--rx) * var(--motion))) rotateY(calc(var(--ry) * var(--motion))) translateY(-4px);
+}
+.video-card::after {
+  content: ""; position: absolute; inset: 0; z-index: 2;
+  border-radius: inherit; pointer-events: none;
+  background: radial-gradient(420px circle at var(--mx) var(--my),
+              color-mix(in srgb, var(--accent) 9%, transparent), transparent 55%);
+  opacity: 0; transition: opacity 0.25s ease;
+}
+.js-motion .video-card:hover::after { opacity: 1; }
+
+/* ---------- Shorts kartları: 3B eğim ---------- */
+.short-card { --rx: 0deg; --ry: 0deg; }
+.js-motion .short-card {
+  transform: perspective(700px) rotateX(calc(var(--rx) * var(--motion))) rotateY(calc(var(--ry) * var(--motion)));
+  transition: transform 0.18s ease-out, border-color 0.2s;
+}
+
+/* ---------- Mıknatıslı düğmeler ---------- */
+.js-motion .btn { transition: translate 0.2s cubic-bezier(0.2, 0.7, 0.2, 1), transform 0.15s, box-shadow 0.2s, border-color 0.2s; }
+
+/* ---------- Kaydırma ilerleme çubuğu ---------- */
+#scroll-progress {
+  position: absolute; left: 0; bottom: -1px; height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--accent), var(--accent-2));
+  border-radius: 2px;
+}
+
+/* ---------- Kademeli kart girişleri ---------- */
+.js-motion .video-grid .reveal { transition-delay: calc(var(--i, 0) * 0.07s); }
+.js-motion .sponsor-grid .reveal { transition-delay: calc(var(--i, 0) * 0.09s); }
+.js-motion .shorts-row .reveal { transition-delay: calc(var(--i, 0) * 0.07s); }
+
+/* ---------- Duyuru satırları ---------- */
+.news-item { transition: background 0.2s, padding-left 0.25s ease; border-radius: 8px; }
+.news-item:hover { background: var(--surface-2); padding-left: 18px; }
