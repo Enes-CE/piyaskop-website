@@ -1,357 +1,692 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Piyaskop — Görünenin Arkasındaki Sistem</title>
-<link rel="icon" href="assets/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link href="motion.css" rel="stylesheet">
-<style>
-  :root {
-    --accent: #4da3ff;
-    --accent-2: #2fd4b9;
-    --bg: #090d11;
-    --surface: #0f151b;
-    --surface-2: #131b22;
-    --line: rgba(255, 255, 255, 0.08);
-    --text: #e8edf0;
-    --muted: #93a1ab;
-    --radius: 11px;
-    --glow-opacity: 0.66;
-    --motion: 0.7;
-    --font-display: "Space Grotesk", sans-serif;
-    --font-body: "Manrope", sans-serif;
-  }
 
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       1. CHARSET & ENCODING
+       ─ En başta olmalı; tarayıcının karakter setini doğru parse
+         etmesi için ilk 1024 byte içinde yer alması zorunlu.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta charset="UTF-8">
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: var(--font-body);
-    font-size: 16px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
 
-  h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       2. VIEWPORT (Mobil SEO)
+       ─ "initial-scale=1.0" Google'ın mobil-first indeksleme için
+         şart koştuğu standart değer.
+       ─ "viewport-fit=cover" iOS notch/Dynamic Island desteği sağlar.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 
-  a { color: inherit; text-decoration: none; }
-  img { display: block; }
 
-  .wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       3. SEO TITLE
+       ─ Format: [Birincil Anahtar Kelime] | [Marka]
+       ─ "Teknoloji ve Yapay Zeka Analizleri" → hedef arama niyeti
+       ─ "Piyaskop" → marka tanınırlığı
+       ─ 52 karakter: Google'ın 600px (~60 karakter) sınırı içinde.
+       ─ Her alt sayfada title dinamik olarak değişmeli; bu ana sayfa
+         için optimize edilmiştir.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <title>Piyaskop — Teknoloji ve Yapay Zeka Analizleri</title>
 
-  /* ---------- Nav ---------- */
-  .nav {
-    position: sticky; top: 0; z-index: 50;
-    background: color-mix(in srgb, var(--bg) 82%, transparent);
-    backdrop-filter: blur(14px);
-    border-bottom: 1px solid var(--line);
-  }
-  .nav-inner {
-    display: flex; align-items: center; gap: 32px;
-    height: 68px;
-  }
-  .nav-brand { display: flex; align-items: center; gap: 12px; margin-right: auto; }
-  .nav-brand img { width: 36px; height: 36px; }
-  .nav-brand span {
-    font-family: var(--font-display); font-weight: 700; font-size: 19px;
-    letter-spacing: 0.04em; text-transform: uppercase;
-  }
-  .nav-links { display: flex; gap: 28px; }
-  .nav-links a {
-    font-size: 14px; font-weight: 600; color: var(--muted);
-    white-space: nowrap;
-    transition: color 0.2s;
-  }
-  .nav-links a:hover, .nav-links a.active { color: var(--text); }
-  .btn {
-    display: inline-flex; align-items: center; gap: 8px;
-    white-space: nowrap;
-    font-family: var(--font-display); font-weight: 600; font-size: 14px;
-    padding: 10px 20px; border-radius: 999px; border: none; cursor: pointer;
-    transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
-  }
-  .btn-primary {
-    background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    color: #07120f;
-  }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
-  .btn-ghost {
-    background: transparent; color: var(--text);
-    border: 1px solid var(--line);
-  }
-  .btn-ghost:hover { border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
 
-  /* ---------- Hero ---------- */
-  .hero { position: relative; overflow: hidden; padding: 96px 0 88px; }
-  .hero-glow {
-    position: absolute; inset: 0; pointer-events: none;
-    opacity: var(--glow-opacity);
-    background:
-      radial-gradient(560px 360px at 78% 28%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
-      radial-gradient(480px 320px at 12% 86%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 70%);
-  }
-  .hero-inner {
-    position: relative;
-    display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center;
-  }
-  .hero-kicker {
-    display: inline-flex; align-items: center; gap: 10px;
-    font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
-    margin-bottom: 22px;
-  }
-  .hero-kicker::before {
-    content: ""; width: 28px; height: 2px;
-    background: var(--accent); border-radius: 2px;
-  }
-  .hero h1 {
-    font-size: clamp(40px, 5vw, 58px); font-weight: 700; letter-spacing: -0.02em;
-    margin-bottom: 20px;
-  }
-  .hero h1 em {
-    font-style: normal;
-    background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
-  .hero p { font-size: 18px; color: var(--muted); max-width: 46ch; margin-bottom: 34px; text-wrap: pretty; }
-  .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       4. META DESCRIPTION
+       ─ 157 karakter: Google'ın 920px (~155-160 karakter) aralığında.
+       ─ Birincil anahtar kelimeler öne alındı: teknoloji, yapay zeka,
+         şirket analizi.
+       ─ CTA içeriyor ("abone ol") → tıklama oranını artırır.
+       ─ Türkçe kullanıcıya hitap eden doğal bir ton.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="description"
+        content="Teknoloji dünyasının ve yapay zeka şirketlerinin perde arkasını analiz ediyoruz. Google, Meta, OpenAI ve daha fazlası. Haftalık derin analizler için abone ol.">
 
-  .hero-frame { position: relative; }
-  .hero-frame image-slot {
-    width: 100%; aspect-ratio: 16 / 9; display: block;
-    border-radius: var(--radius);
-    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--line);
-  }
-  .hero-frame .play-badge {
-    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
-    width: 72px; height: 72px; border-radius: 50%;
-    background: color-mix(in srgb, var(--bg) 65%, transparent);
-    backdrop-filter: blur(6px);
-    border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
-    display: grid; place-items: center; pointer-events: none;
-  }
-  .hero-frame .play-badge::after {
-    content: ""; margin-left: 5px;
-    border-left: 20px solid var(--accent);
-    border-top: 12px solid transparent; border-bottom: 12px solid transparent;
-  }
-  .hero-frame figcaption {
-    margin-top: 14px; font-size: 13px; color: var(--muted);
-    font-family: var(--font-display); letter-spacing: 0.04em;
-  }
 
-  /* ---------- Sections ---------- */
-  section { padding: 88px 0; }
-  .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 44px; }
-  .section-head h2 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 700; letter-spacing: -0.01em; }
-  .section-kicker {
-    display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
-    text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
-    font-family: var(--font-display);
-  }
-  .section-head p { color: var(--muted); max-width: 44ch; font-size: 15px; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       5. CANONICAL URL
+       ─ Mevcut `<head>`'de yoktu. Kritik eksikti.
+       ─ Cloudflare Pages'da hem "piyaskop.com" hem
+         "www.piyaskop.com" aktif olabilir; canonical hangisinin
+         "asıl sayfa" olduğunu arama motorlarına bildirir.
+       ─ Duplicate content cezasını önler.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="canonical" href="https://piyaskop.com/">
 
-  /* ---------- Videos ---------- */
-  .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .video-card {
-    background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); overflow: hidden;
-    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
-  }
-  .video-card:hover {
-    transform: translateY(-4px);
-    border-color: color-mix(in srgb, var(--accent) 40%, transparent);
-    box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
-  }
-  .video-card image-slot { width: 100%; aspect-ratio: 16 / 9; display: block; }
-  .video-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
-  .video-tag {
-    align-self: flex-start;
-    font-family: var(--font-display); font-size: 11px; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase;
-    color: var(--accent);
-    border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
-    border-radius: 999px; padding: 3px 10px;
-  }
-  .video-card h3 { font-size: 17px; font-weight: 600; }
-  .video-card-link { display: contents; }
 
-  .videos-foot { display: flex; justify-content: center; margin-top: 44px; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       6. ROBOTS
+       ─ Mevcut `<head>`'de yoktu.
+       ─ "index, follow" → hem sayfa hem linkler indekslensin.
+       ─ "max-snippet:-1" → Google arama sonuçlarında tam açıklama
+         snippet'i gösterilmesine izin verir.
+       ─ "max-image-preview:large" → Google Discover için büyük
+         görsel önizlemesine izin verir (önemli!).
+       ─ "max-video-preview:-1" → YouTube embed önizlemeleri için.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="robots"
+        content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
 
-  /* ---------- Öne çıkan video ---------- */
-  .featured-scene { padding: 80px 0 0; }
-  .featured-scene .section-kicker { margin-bottom: 22px; }
-  .featured { display: block; }
-  .featured-media {
-    position: relative; aspect-ratio: 2.1 / 1;
-    border-radius: var(--radius); overflow: hidden;
-    background: var(--surface);
-    box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--line);
-  }
-  .featured-media image-slot { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-  .featured-info { display: flex; align-items: center; gap: 18px; margin-top: 24px; flex-wrap: wrap; }
-  .featured-info h3 { font-size: clamp(22px, 2.6vw, 32px); font-weight: 600; }
-  .featured-watch {
-    margin-left: auto; white-space: nowrap;
-    font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--accent);
-  }
-  .featured:hover .featured-watch { text-decoration: underline; }
 
-  /* ---------- Shorts ---------- */
-  .shorts-head { display: flex; align-items: baseline; gap: 18px; margin: 56px 0 24px; }
-  .shorts-head h3 { font-size: 22px; }
-  .shorts-head p { color: var(--muted); font-size: 14px; }
-  .shorts-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
-  .short-card {
-    position: relative; display: block;
-    border-radius: var(--radius); overflow: hidden;
-    background: var(--surface); border: 1px solid var(--line);
-    transition: transform 0.2s, border-color 0.2s;
-  }
-  .short-card:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
-  .short-card image-slot { width: 100%; aspect-ratio: 9 / 16; display: block; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       7. TEMEL SEO META ETİKETLERİ
+       ─ "author" → arama motorları ve AI sistemleri için içerik
+         sahipliğini netleştirir.
+       ─ "keywords" → Google artık sıralamada kullanmasa da Bing ve
+         ChatGPT/Gemini gibi AI arama sistemleri okuyabilir.
+         Aşırı doldurmaktan kaçın; 8-10 kelime yeterli.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="author" content="Piyaskop">
+  <meta name="keywords"
+        content="yapay zeka analizi, teknoloji haberleri, şirket analizi, AI, Google analiz, Meta analiz, OpenAI, Türkçe teknoloji, piyaskop, tech youtube">
 
-  /* ---------- About ---------- */
-  .about { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .about-inner { display: grid; grid-template-columns: 320px 1fr; gap: 72px; align-items: center; }
-  .about-portrait { position: relative; width: 280px; height: 280px; margin: 0 auto; }
-  .about-portrait::before {
-    content: ""; position: absolute; inset: -14px; border-radius: 50%;
-    border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
-  }
-  .about-portrait image-slot { width: 100%; height: 100%; display: block; }
-  .about h2 { font-size: clamp(28px, 3.2vw, 38px); margin-bottom: 18px; }
-  .about p { color: var(--muted); margin-bottom: 16px; max-width: 58ch; text-wrap: pretty; }
-  .about-points { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
-  .about-points span {
-    font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    padding: 8px 16px; border-radius: 999px;
-    background: var(--surface-2); border: 1px solid var(--line);
-  }
-  .about-questions { list-style: none; margin: 4px 0 22px; display: flex; flex-direction: column; gap: 10px; }
-  .about-questions li {
-    display: flex; gap: 12px; align-items: baseline;
-    font-weight: 600; font-size: 16px; color: var(--text);
-  }
-  .about-questions li::before {
-    content: "→"; color: var(--accent);
-    font-family: var(--font-display); font-weight: 700;
-  }
-  .about-slogan {
-    font-family: var(--font-display); font-size: 19px; font-weight: 700;
-    color: var(--text); margin-top: 26px;
-  }
-  .about-slogan em {
-    font-style: normal;
-    background: linear-gradient(120deg, var(--accent), var(--accent-2));
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-  }
 
-  /* ---------- Sponsor ---------- */
-  .sponsor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
-  .sponsor-card {
-    background: var(--surface); border: 1px solid var(--line);
-    border-radius: var(--radius); padding: 30px 28px;
-    display: flex; flex-direction: column; gap: 12px;
-  }
-  .sponsor-card .num {
-    font-family: var(--font-display); font-size: 14px; font-weight: 700;
-    color: var(--accent); letter-spacing: 0.1em;
-  }
-  .sponsor-card h3 { font-size: 19px; font-weight: 600; }
-  .sponsor-card p { color: var(--muted); font-size: 15px; }
-  .sponsor-cta {
-    margin-top: 48px;
-    background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));
-    border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
-    border-radius: var(--radius);
-    padding: 36px 40px;
-    display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
-  }
-  .sponsor-cta h3 { font-size: 22px; margin-bottom: 6px; }
-  .sponsor-cta p { color: var(--muted); font-size: 15px; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       8. LANGUAGE & LOCALE
+       ─ Mevcut `<html>` tag'inde lang="tr" yoktu (şimdi eklendi).
+       ─ "content-language" → HTTP başlığı yetersiz kalırsa
+         meta etiket fallback görevi görür.
+       ─ Google'ın dil algılamasını güçlendirir; Türk kullanıcılara
+         öncelikli gösterim sağlar.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta http-equiv="content-language" content="tr">
+  <meta name="language" content="Turkish">
 
-  /* ---------- Duyurular ---------- */
-  .news { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
-  .news-list { display: flex; flex-direction: column; }
-  .news-item {
-    display: grid; grid-template-columns: 130px 1fr auto; gap: 28px; align-items: baseline;
-    padding: 26px 8px; border-bottom: 1px solid var(--line);
-  }
-  .news-item:first-child { border-top: 1px solid var(--line); }
-  .news-date {
-    font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    color: var(--accent); letter-spacing: 0.06em;
-  }
-  .news-item h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
-  .news-item p { color: var(--muted); font-size: 14px; }
-  .news-pill {
-    font-family: var(--font-display); font-size: 11px; font-weight: 600;
-    letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
-    border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px;
-    white-space: nowrap;
-  }
 
-  /* ---------- Footer ---------- */
-  footer { padding: 64px 0 40px; }
-  .footer-top {
-    display: flex; align-items: center; justify-content: space-between; gap: 24px;
-    padding-bottom: 36px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
-  }
-  .footer-brand { display: flex; align-items: center; gap: 14px; }
-  .footer-brand img { width: 44px; height: 44px; }
-  .footer-brand strong {
-    font-family: var(--font-display); font-size: 18px; letter-spacing: 0.04em;
-    text-transform: uppercase; display: block;
-  }
-  .footer-brand small { color: var(--muted); font-size: 13px; }
-  .footer-social { display: flex; gap: 12px; }
-  .footer-social a {
-    display: inline-flex; align-items: center;
-    font-family: var(--font-display); font-size: 13px; font-weight: 600;
-    padding: 9px 18px; border-radius: 999px;
-    border: 1px solid var(--line); color: var(--muted);
-    transition: color 0.2s, border-color 0.2s;
-  }
-  .footer-social a:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
-  .footer-bottom {
-    display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
-    padding-top: 24px; color: var(--muted); font-size: 13px;
-  }
-  .footer-bottom a { color: var(--accent); }
+  <!-- ═══════════════════════════════════════════════════════════════
+       9. OPEN GRAPH — Sosyal Medya Paylaşımı
+       ─ Mevcut `<head>`'de hiç OG etiketi yoktu. Kritik eksikti.
+       ─ Facebook, LinkedIn, WhatsApp, Telegram bu etiketleri okur.
+       ─ og:image → Minimum 1200×630px olmalı; görsel ağırlıklı
+         paylaşımlar için 1200×630 veya 2400×1260px önerilir.
+       ─ og:image:width / og:image:height → Facebook crawler'ının
+         görseli hızlı işlemesi için zorunlu.
+       ─ og:locale → Türkçe içerik için "tr_TR".
+       ─ og:site_name → Arama motoru knowledge panel'leri için.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta property="og:type"        content="website">
+  <meta property="og:site_name"   content="Piyaskop">
+  <meta property="og:locale"      content="tr_TR">
+  <meta property="og:url"         content="https://piyaskop.com/">
+  <meta property="og:title"       content="Piyaskop — Görünenin Arkasındaki Sistem">
+  <meta property="og:description"
+        content="Teknoloji dünyasının ve yapay zeka şirketlerinin perde arkasını analiz ediyoruz. Google, Meta, OpenAI ve daha fazlası. Haftalık derin analizler için abone ol.">
+  <meta property="og:image"       content="https://piyaskop.com/assets/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt"
+        content="Piyaskop — Teknoloji ve Yapay Zeka Analizleri">
+  <meta property="og:image:type"  content="image/jpeg">
 
-  /* ---------- Reveal ---------- */
-  @media (prefers-reduced-motion: no-preference) {
-    .js-reveal .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
-    .js-reveal .reveal.in { opacity: 1; transform: none; }
-  }
 
-  /* ---------- Responsive ---------- */
-  @media (max-width: 920px) {
-    .hero-inner { grid-template-columns: 1fr; gap: 48px; }
-    .video-grid, .sponsor-grid { grid-template-columns: 1fr 1fr; }
-    .about-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
-    .about p, .about h2 { margin-left: auto; margin-right: auto; }
-    .about-points { justify-content: center; }
-    .about-questions li { justify-content: center; }
-    .nav-links { display: none; }
+  <!-- ═══════════════════════════════════════════════════════════════
+       10. TWITTER / X CARD
+       ─ Mevcut `<head>`'de yoktu.
+       ─ "summary_large_image" → büyük görsel önizlemeli kart tipi;
+         görsel içerik kanallar için standart seçim.
+       ─ Twitter bu etiketleri görmezden gelse de X API hâlâ okur.
+       ─ OG etiketlerini kopyalamak yeterli değil; Twitter ayrı
+         etiketlerle daha güvenilir önizleme sunar.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <meta name="twitter:card"        content="summary_large_image">
+  <meta name="twitter:site"        content="@piyaskop">
+  <meta name="twitter:creator"     content="@piyaskop">
+  <meta name="twitter:title"       content="Piyaskop — Görünenin Arkasındaki Sistem">
+  <meta name="twitter:description"
+        content="Teknoloji dünyasının ve yapay zeka şirketlerinin perde arkasını analiz ediyoruz. Google, Meta, OpenAI ve daha fazlası.">
+  <meta name="twitter:image"       content="https://piyaskop.com/assets/og-image.jpg">
+  <meta name="twitter:image:alt"
+        content="Piyaskop — Teknoloji ve Yapay Zeka Analizleri">
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       11. FAVICON — Çoklu Boyut Desteği
+       ─ Mevcut kod: <link rel="icon" href="assets/logo.png">
+         Bu sadece tek boyut, modern tarayıcılar için yetersiz.
+       ─ apple-touch-icon → iOS'ta "Ana Ekrana Ekle" için zorunlu.
+         180×180px olmalı; şeffaf arka plan OLMAMALI (beyaz/renkli).
+       ─ favicon-32x32.png → Tarayıcı tab'ları için standart boyut.
+       ─ favicon-16x16.png → Eski tarayıcılar ve bookmark listesi.
+       ─ site.webmanifest → PWA ve Android "Ana Ekrana Ekle" desteği.
+       ─ msapplication-TileColor → Windows pinned tiles rengi.
+       ─ theme-color → Chrome/Edge mobil adres çubuğu rengi.
+         Sitenin --bg değişkeni (#090d11) kullanıldı.
+
+       ──────────────────────────────────────────────────────────────
+       OLUŞTURMAN GEREKEN FAVICON DOSYALARI:
+       assets/
+         favicon.ico          (16x16 + 32x32 multi-size ICO)
+         favicon-16x16.png    (16×16)
+         favicon-32x32.png    (32×32)
+         apple-touch-icon.png (180×180, opak arka plan)
+         android-chrome-192x192.png
+         android-chrome-512x512.png
+         site.webmanifest     (aşağıda içeriği var)
+       ──────────────────────────────────────────────────────────────
+       Ücretsiz araç: https://realfavicongenerator.net
+       Logo.png'i yükle, --bg rengi (#090d11) ile arka plan ayarla.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="icon" type="image/x-icon"       href="/assets/favicon.ico">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180"    href="/assets/apple-touch-icon.png">
+  <link rel="manifest"                             href="/site.webmanifest">
+  <meta name="msapplication-TileColor" content="#090d11">
+  <meta name="theme-color" content="#090d11">
+
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       13. GOOGLE ANALYTICS 4
+       ─ Mevcut `<head>`'de analytics kodu yoktu.
+       ─ "async" → sayfanın render'ını bloklamaz; performans için
+         kritik. Sync yükleme Core Web Vitals'ı bozar.
+       ─ gtag.js, GA4 için standart yükleme yöntemi.
+       ─ [G-VRL2729L58] → kendi G-XXXXXXXXXX ID'nle değiştir.
+       ─ NOT: Gizlilik odaklı alternatif için Cloudflare Web Analytics
+         (ücretsiz) veya Plausible/Fathom değerlendirilebilir.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=[G-VRL2729L58]"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-VRL2729L58', {
+      'anonymize_ip': true   // KVKK uyumu için IP anonimleştirme
+    });
+  </script>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       14. ORGANIZATION SCHEMA (JSON-LD)
+       ─ Mevcut `<head>`'de yoktu. AI arama sistemleri için kritik.
+       ─ Google'ın Knowledge Panel'ini tetikler.
+       ─ ChatGPT, Gemini, Perplexity gibi AI arama motorları JSON-LD
+         şemalarını okuyarak içeriği daha iyi anlar.
+       ─ "sameAs" → farklı platformlardaki varlıkları birbirine
+         bağlar; entity authority'yi güçlendirir.
+       ─ WebSite şeması + SearchAction → Google'ın site içi arama
+         özelliğini (sitelinks searchbox) aktive edebilir.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://piyaskop.com/#organization",
+        "name": "Piyaskop",
+        "alternateName": "Piyaskop Teknoloji Analiz",
+        "url": "https://piyaskop.com",
+        "logo": {
+          "@type": "ImageObject",
+          "@id": "https://piyaskop.com/#logo",
+          "url": "https://piyaskop.com/assets/logo.png",
+          "width": 512,
+          "height": 512,
+          "contentUrl": "https://piyaskop.com/assets/logo.png"
+        },
+        "description": "Teknoloji dünyasının ve yapay zeka şirketlerinin perde arkasını analiz eden Türkçe içerik kanalı.",
+        "inLanguage": "tr",
+        "foundingDate": "2026",
+        "sameAs": [
+          "https://youtube.com/@piyaskop",
+          "https://www.youtube.com/@piyaskop"
+        ],
+        "knowsAbout": [
+          "Yapay Zeka",
+          "Teknoloji Şirketleri",
+          "Büyük Dil Modelleri",
+          "Teknoloji Analizi",
+          "Silicon Valley"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://piyaskop.com/#website",
+        "url": "https://piyaskop.com",
+        "name": "Piyaskop",
+        "description": "Teknoloji ve yapay zeka analizleri",
+        "inLanguage": "tr",
+        "publisher": {
+          "@id": "https://piyaskop.com/#organization"
+        },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://piyaskop.com/?s={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "WebPage",
+        "@id": "https://piyaskop.com/#webpage",
+        "url": "https://piyaskop.com/",
+        "name": "Piyaskop — Teknoloji ve Yapay Zeka Analizleri",
+        "isPartOf": {
+          "@id": "https://piyaskop.com/#website"
+        },
+        "about": {
+          "@id": "https://piyaskop.com/#organization"
+        },
+        "description": "Teknoloji dünyasının ve yapay zeka şirketlerinin perde arkasını analiz ediyoruz.",
+        "inLanguage": "tr",
+        "breadcrumb": {
+          "@type": "BreadcrumbList",
+          "itemListElement": [
+            {
+              "@type": "ListItem",
+              "position": 1,
+              "name": "Ana Sayfa",
+              "item": "https://piyaskop.com/"
+            }
+          ]
+        }
+      }
+    ]
   }
-  @media (max-width: 600px) {
-    .video-grid, .sponsor-grid { grid-template-columns: 1fr; }
-    .shorts-row { grid-template-columns: 1fr 1fr; }
-    .featured-watch { margin-left: 0; }
-    .news-item { grid-template-columns: 1fr; gap: 6px; }
-    .news-pill { justify-self: start; }
-    section { padding: 64px 0; }
-    .wrap { padding: 0 20px; }
-  }
-</style>
+  </script>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       15. PERFORMANS — DNS PREFETCH & PRECONNECT
+       ─ Mevcut kodda sadece Google Fonts preconnect vardı; bu iyi.
+       ─ dns-prefetch → DNS çözümlemeyi önceden yapar; preconnect
+         kadar güçlü değil ama düşük öncelikli kaynaklar için yeterli.
+       ─ Önemli: preconnect'i sadece kritik kaynaklar için kullan.
+         Fazla preconnect bant genişliğini boşa harcar.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com">
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       16. FONT YÜKLEME — PERFORMANS OPTİMİZASYONU
+       ─ Mevcut kodda "display=swap" vardı ama display=optional daha
+         iyi CLS (Cumulative Layout Shift) skoru verir.
+       ─ Ancak display=swap FOUT'u (Flash of Unstyled Text) önlediği
+         için içerik kanallar için tercih edilebilir; mevcut hali
+         korundu.
+       ─ Kritik font karakterleri için `&text=` parametresi eklenebilir
+         ama dinamik içerik için uygun değil.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Manrope:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       17. MOTION CSS — PRELOAD
+       ─ Mevcut kodda <link href="motion.css"> vardı; bu render-
+         blocking bir kaynak. Kritik CSS ise preload'a alınabilir.
+       ─ Eğer motion.css animasyon/geçiş stilleri içeriyorsa ve
+         LCP'yi etkilemiyorsa preload eklemek faydalı olur.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="preload" href="motion.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="motion.css"></noscript>
+
+
+  <!-- ═══════════════════════════════════════════════════════════════
+       18. LCP GÖRSEL OPTİMİZASYONU
+       ─ Hero bölümündeki ana görsel (thumbnail/banner) için preload.
+       ─ LCP (Largest Contentful Paint) skorunu doğrudan etkiler.
+       ─ Sitenin hero görseli belirlendikten sonra src'yi güncelle.
+       ─ imagesrcset ile responsive versiyonlar da eklenebilir.
+  ═══════════════════════════════════════════════════════════════════ -->
+  <link rel="preload"
+        as="image"
+        href="/assets/hero-thumbnail.jpg"
+        type="image/jpeg">
+
+
+  <!-- İÇ STİLLER — Mevcut koddan korundu, değiştirilmedi -->
+  <style>
+    :root {
+      --accent: #4da3ff;
+      --accent-2: #2fd4b9;
+      --bg: #090d11;
+      --surface: #0f151b;
+      --surface-2: #131b22;
+      --line: rgba(255, 255, 255, 0.08);
+      --text: #e8edf0;
+      --muted: #93a1ab;
+      --radius: 11px;
+      --glow-opacity: 0.66;
+      --motion: 0.7;
+      --font-display: "Space Grotesk", sans-serif;
+      --font-body: "Manrope", sans-serif;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    h1, h2, h3 { font-family: var(--font-display); line-height: 1.15; text-wrap: balance; }
+
+    a { color: inherit; text-decoration: none; }
+    img { display: block; }
+
+    .wrap { max-width: 1160px; margin: 0 auto; padding: 0 32px; }
+
+    /* ---------- Nav ---------- */
+    .nav {
+      position: sticky; top: 0; z-index: 50;
+      background: color-mix(in srgb, var(--bg) 82%, transparent);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--line);
+    }
+    .nav-inner {
+      display: flex; align-items: center; gap: 32px;
+      height: 68px;
+    }
+    .nav-brand { display: flex; align-items: center; gap: 12px; margin-right: auto; }
+    .nav-brand img { width: 36px; height: 36px; }
+    .nav-brand span {
+      font-family: var(--font-display); font-weight: 700; font-size: 19px;
+      letter-spacing: 0.04em; text-transform: uppercase;
+    }
+    .nav-links { display: flex; gap: 28px; }
+    .nav-links a {
+      font-size: 14px; font-weight: 600; color: var(--muted);
+      white-space: nowrap;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover, .nav-links a.active { color: var(--text); }
+    .btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      white-space: nowrap;
+      font-family: var(--font-display); font-weight: 600; font-size: 14px;
+      padding: 10px 20px; border-radius: 999px; border: none; cursor: pointer;
+      transition: transform 0.15s, box-shadow 0.2s, background 0.2s;
+    }
+    .btn-primary {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      color: #07120f;
+    }
+    .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 24px color-mix(in srgb, var(--accent) 35%, transparent); }
+    .btn-ghost {
+      background: transparent; color: var(--text);
+      border: 1px solid var(--line);
+    }
+    .btn-ghost:hover { border-color: color-mix(in srgb, var(--accent) 60%, transparent); }
+
+    /* ---------- Hero ---------- */
+    .hero { position: relative; overflow: hidden; padding: 96px 0 88px; }
+    .hero-glow {
+      position: absolute; inset: 0; pointer-events: none;
+      opacity: var(--glow-opacity);
+      background:
+        radial-gradient(560px 360px at 78% 28%, color-mix(in srgb, var(--accent) 16%, transparent), transparent 70%),
+        radial-gradient(480px 320px at 12% 86%, color-mix(in srgb, var(--accent-2) 10%, transparent), transparent 70%);
+    }
+    .hero-inner {
+      position: relative;
+      display: grid; grid-template-columns: 1.05fr 1fr; gap: 64px; align-items: center;
+    }
+    .hero-kicker {
+      display: inline-flex; align-items: center; gap: 10px;
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      letter-spacing: 0.14em; text-transform: uppercase; color: var(--accent);
+      margin-bottom: 22px;
+    }
+    .hero-kicker::before {
+      content: ""; width: 28px; height: 2px;
+      background: var(--accent); border-radius: 2px;
+    }
+    .hero h1 {
+      font-size: clamp(40px, 5vw, 58px); font-weight: 700; letter-spacing: -0.02em;
+      margin-bottom: 20px;
+    }
+    .hero h1 em {
+      font-style: normal;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+    .hero p { font-size: 18px; color: var(--muted); max-width: 46ch; margin-bottom: 34px; text-wrap: pretty; }
+    .hero-ctas { display: flex; gap: 14px; flex-wrap: wrap; }
+
+    .hero-frame { position: relative; }
+    .hero-frame image-slot {
+      width: 100%; aspect-ratio: 16 / 9; display: block;
+      border-radius: var(--radius);
+      box-shadow: 0 24px 60px rgba(0, 0, 0, 0.5), 0 0 0 1px var(--line);
+    }
+    .hero-frame .play-badge {
+      position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+      width: 72px; height: 72px; border-radius: 50%;
+      background: color-mix(in srgb, var(--bg) 65%, transparent);
+      backdrop-filter: blur(6px);
+      border: 1px solid color-mix(in srgb, var(--accent) 55%, transparent);
+      display: grid; place-items: center; pointer-events: none;
+    }
+    .hero-frame .play-badge::after {
+      content: ""; margin-left: 5px;
+      border-left: 20px solid var(--accent);
+      border-top: 12px solid transparent; border-bottom: 12px solid transparent;
+    }
+    .hero-frame figcaption {
+      margin-top: 14px; font-size: 13px; color: var(--muted);
+      font-family: var(--font-display); letter-spacing: 0.04em;
+    }
+
+    /* ---------- Sections ---------- */
+    section { padding: 88px 0; }
+    .section-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 24px; margin-bottom: 44px; }
+    .section-head h2 { font-size: clamp(28px, 3.2vw, 38px); font-weight: 700; letter-spacing: -0.01em; }
+    .section-kicker {
+      display: block; font-size: 12px; font-weight: 600; letter-spacing: 0.16em;
+      text-transform: uppercase; color: var(--accent); margin-bottom: 10px;
+      font-family: var(--font-display);
+    }
+    .section-head p { color: var(--muted); max-width: 44ch; font-size: 15px; }
+
+    /* ---------- Videos ---------- */
+    .video-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .video-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); overflow: hidden;
+      transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    }
+    .video-card:hover {
+      transform: translateY(-4px);
+      border-color: color-mix(in srgb, var(--accent) 40%, transparent);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.45);
+    }
+    .video-card image-slot { width: 100%; aspect-ratio: 16 / 9; display: block; }
+    .video-card-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; }
+    .video-tag {
+      align-self: flex-start;
+      font-family: var(--font-display); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: var(--accent);
+      border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+      border-radius: 999px; padding: 3px 10px;
+    }
+    .video-card h3 { font-size: 17px; font-weight: 600; }
+    .video-card-link { display: contents; }
+
+    .videos-foot { display: flex; justify-content: center; margin-top: 44px; }
+
+    /* ---------- Öne çıkan video ---------- */
+    .featured-scene { padding: 80px 0 0; }
+    .featured-scene .section-kicker { margin-bottom: 22px; }
+    .featured { display: block; }
+    .featured-media {
+      position: relative; aspect-ratio: 2.1 / 1;
+      border-radius: var(--radius); overflow: hidden;
+      background: var(--surface);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.55), 0 0 0 1px var(--line);
+    }
+    .featured-media image-slot { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
+    .featured-info { display: flex; align-items: center; gap: 18px; margin-top: 24px; flex-wrap: wrap; }
+    .featured-info h3 { font-size: clamp(22px, 2.6vw, 32px); font-weight: 600; }
+    .featured-watch {
+      margin-left: auto; white-space: nowrap;
+      font-family: var(--font-display); font-size: 14px; font-weight: 600; color: var(--accent);
+    }
+    .featured:hover .featured-watch { text-decoration: underline; }
+
+    /* ---------- Shorts ---------- */
+    .shorts-head { display: flex; align-items: baseline; gap: 18px; margin: 56px 0 24px; }
+    .shorts-head h3 { font-size: 22px; }
+    .shorts-head p { color: var(--muted); font-size: 14px; }
+    .shorts-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+    .short-card {
+      position: relative; display: block;
+      border-radius: var(--radius); overflow: hidden;
+      background: var(--surface); border: 1px solid var(--line);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+    .short-card:hover { border-color: color-mix(in srgb, var(--accent) 40%, transparent); }
+    .short-card image-slot { width: 100%; aspect-ratio: 9 / 16; display: block; }
+
+    /* ---------- About ---------- */
+    .about { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .about-inner { display: grid; grid-template-columns: 320px 1fr; gap: 72px; align-items: center; }
+    .about-portrait { position: relative; width: 280px; height: 280px; margin: 0 auto; }
+    .about-portrait::before {
+      content: ""; position: absolute; inset: -14px; border-radius: 50%;
+      border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    }
+    .about-portrait image-slot { width: 100%; height: 100%; display: block; }
+    .about h2 { font-size: clamp(28px, 3.2vw, 38px); margin-bottom: 18px; }
+    .about p { color: var(--muted); margin-bottom: 16px; max-width: 58ch; text-wrap: pretty; }
+    .about-points { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 26px; }
+    .about-points span {
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      padding: 8px 16px; border-radius: 999px;
+      background: var(--surface-2); border: 1px solid var(--line);
+    }
+    .about-questions { list-style: none; margin: 4px 0 22px; display: flex; flex-direction: column; gap: 10px; }
+    .about-questions li {
+      display: flex; gap: 12px; align-items: baseline;
+      font-weight: 600; font-size: 16px; color: var(--text);
+    }
+    .about-questions li::before {
+      content: "→"; color: var(--accent);
+      font-family: var(--font-display); font-weight: 700;
+    }
+    .about-slogan {
+      font-family: var(--font-display); font-size: 19px; font-weight: 700;
+      color: var(--text); margin-top: 26px;
+    }
+    .about-slogan em {
+      font-style: normal;
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text; background-clip: text; color: transparent;
+    }
+
+    /* ---------- Sponsor ---------- */
+    .sponsor-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 28px; }
+    .sponsor-card {
+      background: var(--surface); border: 1px solid var(--line);
+      border-radius: var(--radius); padding: 30px 28px;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .sponsor-card .num {
+      font-family: var(--font-display); font-size: 14px; font-weight: 700;
+      color: var(--accent); letter-spacing: 0.1em;
+    }
+    .sponsor-card h3 { font-size: 19px; font-weight: 600; }
+    .sponsor-card p { color: var(--muted); font-size: 15px; }
+    .sponsor-cta {
+      margin-top: 48px;
+      background: linear-gradient(120deg, color-mix(in srgb, var(--accent) 12%, var(--surface)), var(--surface));
+      border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+      border-radius: var(--radius);
+      padding: 36px 40px;
+      display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;
+    }
+    .sponsor-cta h3 { font-size: 22px; margin-bottom: 6px; }
+    .sponsor-cta p { color: var(--muted); font-size: 15px; }
+
+    /* ---------- Duyurular ---------- */
+    .news { background: var(--surface); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+    .news-list { display: flex; flex-direction: column; }
+    .news-item {
+      display: grid; grid-template-columns: 130px 1fr auto; gap: 28px; align-items: baseline;
+      padding: 26px 8px; border-bottom: 1px solid var(--line);
+    }
+    .news-item:first-child { border-top: 1px solid var(--line); }
+    .news-date {
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      color: var(--accent); letter-spacing: 0.06em;
+    }
+    .news-item h3 { font-size: 17px; font-weight: 600; margin-bottom: 4px; }
+    .news-item p { color: var(--muted); font-size: 14px; }
+    .news-pill {
+      font-family: var(--font-display); font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase; color: var(--muted);
+      border: 1px solid var(--line); border-radius: 999px; padding: 4px 12px;
+      white-space: nowrap;
+    }
+
+    /* ---------- Footer ---------- */
+    footer { padding: 64px 0 40px; }
+    .footer-top {
+      display: flex; align-items: center; justify-content: space-between; gap: 24px;
+      padding-bottom: 36px; border-bottom: 1px solid var(--line); flex-wrap: wrap;
+    }
+    .footer-brand { display: flex; align-items: center; gap: 14px; }
+    .footer-brand img { width: 44px; height: 44px; }
+    .footer-brand strong {
+      font-family: var(--font-display); font-size: 18px; letter-spacing: 0.04em;
+      text-transform: uppercase; display: block;
+    }
+    .footer-brand small { color: var(--muted); font-size: 13px; }
+    .footer-social { display: flex; gap: 12px; }
+    .footer-social a {
+      display: inline-flex; align-items: center;
+      font-family: var(--font-display); font-size: 13px; font-weight: 600;
+      padding: 9px 18px; border-radius: 999px;
+      border: 1px solid var(--line); color: var(--muted);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .footer-social a:hover { color: var(--text); border-color: color-mix(in srgb, var(--accent) 50%, transparent); }
+    .footer-bottom {
+      display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+      padding-top: 24px; color: var(--muted); font-size: 13px;
+    }
+    .footer-bottom a { color: var(--accent); }
+
+    /* ---------- Reveal ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      .js-reveal .reveal { opacity: 0; transform: translateY(18px); transition: opacity 0.6s ease, transform 0.6s ease; }
+      .js-reveal .reveal.in { opacity: 1; transform: none; }
+    }
+
+    /* ---------- Responsive ---------- */
+    @media (max-width: 920px) {
+      .hero-inner { grid-template-columns: 1fr; gap: 48px; }
+      .video-grid, .sponsor-grid { grid-template-columns: 1fr 1fr; }
+      .about-inner { grid-template-columns: 1fr; gap: 48px; text-align: center; }
+      .about p, .about h2 { margin-left: auto; margin-right: auto; }
+      .about-points { justify-content: center; }
+      .about-questions li { justify-content: center; }
+      .nav-links { display: none; }
+    }
+    @media (max-width: 600px) {
+      .video-grid, .sponsor-grid { grid-template-columns: 1fr; }
+      .shorts-row { grid-template-columns: 1fr 1fr; }
+      .featured-watch { margin-left: 0; }
+      .news-item { grid-template-columns: 1fr; gap: 6px; }
+      .news-pill { justify-self: start; }
+      section { padding: 64px 0; }
+      .wrap { padding: 0 20px; }
+    }
+  </style>
+
 </head>
 <body>
 

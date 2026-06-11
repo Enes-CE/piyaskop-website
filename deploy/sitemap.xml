@@ -1,11 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<!--
+  ════════════════════════════════════════════════════
+  Piyaskop — sitemap.xml
+  https://piyaskop.com/sitemap.xml
 
+  NOT: Statik HTML sitende video sayfaları eklenince
+  her sayfayı buraya <url> bloğu olarak ekle.
+  Cloudflare Pages'da otomatik sitemap üretmek için
+  build aşamasında bir script çalıştırabilirsin.
+  ════════════════════════════════════════════════════
+-->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <!-- Ana Sayfa -->
   <url>
     <loc>https://piyaskop.com/</loc>
     <lastmod>2026-06-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
+    <xhtml:link
+      rel="alternate"
+      hreflang="tr"
+      href="https://piyaskop.com/"/>
   </url>
+
+  <!--
+    Video sayfaların olduğunda ekle:
+    <url>
+      <loc>https://piyaskop.com/videolar/</loc>
+      <lastmod>2026-06-11</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.8</priority>
+    </url>
+
+    <url>
+      <loc>https://piyaskop.com/hakkinda/</loc>
+      <lastmod>2026-06-11</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.6</priority>
+    </url>
+  -->
 
 </urlset>

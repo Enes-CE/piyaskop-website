@@ -1,4 +1,37 @@
+# ════════════════════════════════════════════════
+# Piyaskop — robots.txt
+# https://piyaskop.com/robots.txt
+# ════════════════════════════════════════════════
+
+# Tüm arama motorlarına izin ver
 User-agent: *
 Allow: /
 
+# Eğer gelecekte yönetim paneli veya
+# private path eklersen buraya ekle:
+# Disallow: /admin/
+# Disallow: /api/
+
+# Googlebot için özel yönerge (isteğe bağlı)
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# GPTBot (ChatGPT indeksleme) — izin ver
+# Piyaskop içeriğinin AI arama sistemlerinde
+# görünmesini istiyorsak açık bırakmalıyız.
+User-agent: GPTBot
+Allow: /
+
+# Google-Extended (Gemini / Bard) — izin ver
+User-agent: Google-Extended
+Allow: /
+
+# CCBot (Common Crawl / AI eğitim verisi)
+# Eğer içeriğinin AI model eğitiminde kullanılmasını
+# istemiyorsan aşağıdaki satırı aktive et:
+# User-agent: CCBot
+# Disallow: /
+
+# Sitemap konumu — Google ve Bing için zorunlu
 Sitemap: https://piyaskop.com/sitemap.xml
