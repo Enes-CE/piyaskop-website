@@ -1,6 +1,3 @@
-# API anahtarı içerir — depoya girmesin (config.example.js şablonunu kullanın)
-config.js
-
 # Yerel/çalışma dosyaları
 uploads/
 .thumbnail
